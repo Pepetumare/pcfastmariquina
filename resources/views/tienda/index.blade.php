@@ -11,40 +11,53 @@
                 <div class="card-body">
                     <h5 class="card-title">Filtros</h5>
 
-                    <form>
+                    <form method="GET" action="{{ route('tienda.index') }}">
                         <div class="mb-3">
                             <label class="form-label">Categoría</label>
-                            <select class="form-select">
-                                <option>Todos</option>
+                            <select class="form-select" name="categoria" disabled>
+                                <option value="">Todos</option>
                                 <option>Audio</option>
                                 <option>Accesorios</option>
                                 <option>Componentes</option>
+                                {{-- Opcional: conectar con la tabla de categorías --}}
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Precio máximo</label>
-                            <input type="range" class="form-range" min="10000" max="200000" step="5000">
+                            <input type="range" class="form-range" name="precio" min="10000" max="200000" step="5000" disabled>
                         </div>
 
-                        <button class="btn btn-primary w-100">Aplicar</button>
+                        <button class="btn btn-primary w-100" disabled>Aplicar</button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Productos -->
+        <!-- Productos reales -->
         <div class="col-md-9">
+            @php
+                $productos = \App\Models\Product::paginate(9);
+            @endphp
+
             <div class="row">
-                @for ($i = 0; $i < 9; $i++)
+                @forelse ($productos as $producto)
                     @include('components.producto', [
-                        'id' => $i,
-                        'nombre' => 'Producto #' . ($i + 1),
-                        'descripcion' => 'Este es un excelente producto para ti.',
-                        'precio' => number_format(19990 + rand(0, 20000), 0, ',', '.'),
-                        'imagen' => 'https://via.placeholder.com/400x300?text=Producto+' . ($i + 1),
+                        'id' => $producto->id,
+                        'nombre' => $producto->name,
+                        'descripcion' => $producto->description ?? 'Descripción no disponible.',
+                        'precio' => number_format($producto->price, 0, ',', '.'),
+                        'imagen' => $producto->image ?? 'https://via.placeholder.com/400x300?text=Producto'
                     ])
-                @endfor
+                @empty
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">No hay productos disponibles.</div>
+                    </div>
+                @endforelse
+            </div>
+
+            <div class="mt-4 d-flex justify-content-center">
+                {{ $productos->links('vendor.pagination.bootstrap-5') }}
             </div>
         </div>
     </div>

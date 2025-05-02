@@ -17,17 +17,21 @@
             </tr>
         </thead>
         <tbody>
-            @for ($i = 1; $i <= 4; $i++)
+            @foreach ($services as $service)
                 <tr>
-                    <td>Servicio #{{ $i }}</td>
-                    <td>Descripción breve del servicio #{{ $i }}</td>
-                    <td>${{ number_format(19990 + $i * 3000, 0, ',', '.') }}</td>
+                    <td>{{ $service->name }}</td>
+                    <td>{{ $service->description }}</td>
+                    <td>${{ number_format($service->estimated_price, 0, ',', '.') }}</td>
                     <td>
-                        <a href="{{ route('admin.services.edit', $i) }}" class="btn btn-sm btn-warning">Editar</a>
-                        <button class="btn btn-sm btn-danger">Eliminar</button>
+                        <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-sm btn-warning">Editar</a>
+                        <form action="{{ route('admin.services.destroy', $service) }}" method="POST" style="display:inline;">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar?')">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
-            @endfor
-        </tbody>
+            @endforeach
+            </tbody>
+            
     </table>
 @endsection

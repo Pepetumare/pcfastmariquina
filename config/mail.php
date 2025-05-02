@@ -39,15 +39,17 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME'),
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', '127.0.0.1'),
-            'port' => env('MAIL_PORT', 2525),
+            'scheme' => env('MAIL_SCHEME', 'smtp'), // puedes dejarlo o eliminarlo si usas host y port directamente
+            'url' => env('MAIL_URL'), // opcional si defines host y port abajo
+            'host' => env('MAIL_HOST', 'smtp.titan.email'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'), // 👈 FALTA ESTO
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
+
 
         'ses' => [
             'transport' => 'ses',

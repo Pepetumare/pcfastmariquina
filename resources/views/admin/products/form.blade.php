@@ -1,36 +1,44 @@
-<form>
+<form action="{{ isset($product) ? route('admin.products.update', $product) : route('admin.products.store') }}" method="POST">
+    @csrf
+    @if(isset($product)) @method('PUT') @endif
+
     <div class="mb-3">
-        <label class="form-label">Nombre del Producto</label>
-        <input type="text" class="form-control" placeholder="Ej: Audífonos Gamer X">
+        <label>Nombre del Producto</label>
+        <input type="text" name="name" value="{{ old('name', $product->name ?? '') }}" class="form-control">
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Categoría</label>
-        <select class="form-select">
-            <option>Audio</option>
-            <option>Componentes</option>
-            <option>Periféricos</option>
+        <label>Categoría</label>
+        <select name="category_id" class="form-select">
+            @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" @selected(old('category_id', $product->category_id ?? '') == $cat->id)>{{ $cat->name }}</option>
+            @endforeach
         </select>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Descripción</label>
-        <textarea class="form-control" rows="4" placeholder="Describe las características del producto..."></textarea>
+        <label>Descripción</label>
+        <textarea name="description" class="form-control">{{ old('description', $product->description ?? '') }}</textarea>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Precio</label>
-        <input type="number" class="form-control" placeholder="19990">
+        <label>Precio</label>
+        <input type="number" name="price" value="{{ old('price', $product->price ?? '') }}" class="form-control">
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Stock</label>
-        <input type="number" class="form-control" placeholder="10">
+        <label>Stock</label>
+        <input type="number" name="stock" value="{{ old('stock', $product->stock ?? '') }}" class="form-control">
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Imagen</label>
-        <input type="file" class="form-control">
+        <label>Imagen (URL)</label>
+        <input type="url" name="image" value="{{ old('image', $product->image ?? '') }}" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Proveedor</label>
+        <input type="text" name="supplier" value="{{ old('supplier', $product->supplier ?? '') }}" class="form-control">
     </div>
 
     <button class="btn btn-primary">Guardar</button>

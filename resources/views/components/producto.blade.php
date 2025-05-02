@@ -6,18 +6,12 @@
             <p class="card-text">{{ $descripcion }}</p>
             <p class="fw-bold text-primary">${{ $precio }}</p>
 
-            <!-- Botón que abre el modal -->
-            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#productoModal{{ $id }}">
-                Ver más
-            </button>
+            @isset($id)
+                <form action="{{ route('cart.add', $id) }}" method="POST">
+                    @csrf
+                    <button class="btn btn-outline-primary w-100">Agregar al carrito</button>
+                </form>
+            @endisset
         </div>
     </div>
-
-    @include('components.producto-modal', [
-        'id' => $id,
-        'nombre' => $nombre,
-        'descripcion' => $descripcion,
-        'precio' => $precio,
-        'imagen' => $imagen
-    ])
 </div>
