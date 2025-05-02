@@ -13,6 +13,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\QuoteRequestController;
 use App\Http\Controllers\MercadoPagoWebhookController;
+use App\Http\Controllers\OrderTrackingController;
 
 // Panel administrativo (protegido con middleware 'auth' y 'admin')
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -24,6 +25,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('banners', BannerController::class)->except(['edit', 'show']);
     Route::resource('users', UserController::class)->except(['create', 'store', 'destroy']); // opcional
     Route::resource('categories', CategoryController::class); // opcional si usarás categorías
+    Route::patch('/orders/{order}/estado', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])
+    ->name('admin.orders.updateStatus');
+
 });
 
 
@@ -53,6 +57,10 @@ Route::post('/checkout/mercadopago', [CheckoutController::class, 'redirectToMerc
 Route::get('/checkout/success', fn() => view('checkout.success'))->name('checkout.success');
 Route::get('/checkout/failure', fn() => view('checkout.failure'))->name('checkout.failure');
 Route::get('/checkout/pending', fn() => view('checkout.pending'))->name('checkout.pending');
+
+Route::get('/seguimiento', [OrderTrackingController::class, 'form'])->name('tracking.form');
+Route::post('/seguimiento', [OrderTrackingController::class, 'check'])->name('tracking.check');
+
 
 // Breeze Auth
 require __DIR__ . '/auth.php';

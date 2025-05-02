@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Resources\Preference\Item;
 use MercadoPago\MercadoPagoConfig;
+use App\Mail\OrderConfirmation;
+use Illuminate\Support\Facades\Mail;
+
 class CheckoutController extends Controller
 {
     public function form()
@@ -43,6 +46,9 @@ class CheckoutController extends Controller
             ]);
         }
 
+        Mail::to($request->customer_email)->send(new OrderConfirmation($order));
+
+
         session()->forget('cart');
 
         return redirect()->route('home')->with('success', 'Compra realizada con éxito');
@@ -56,14 +62,14 @@ class CheckoutController extends Controller
             'address' => 'required',
             'commune' => 'required',
         ]);
-    
+
         $cart = session('cart', []);
         if (!$cart) {
             return redirect()->route('carrito')->with('error', 'Tu carrito está vacío');
         }
-    
+
         $total = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
-    
+
         // Guardar orden en estado pendiente
         $order = \App\Models\Order::create([
             'customer_name' => $request->customer_name,
@@ -74,7 +80,7 @@ class CheckoutController extends Controller
             'total' => $total,
             'status' => 'pendiente',
         ]);
-    
+
         foreach ($cart as $item) {
             $order->items()->create([
                 'product_name' => $item['name'],
@@ -82,10 +88,10 @@ class CheckoutController extends Controller
                 'quantity' => $item['quantity'],
             ]);
         }
-    
+
         // Configurar Mercado Pago SDK 3.x
         MercadoPagoConfig::setAccessToken(config('services.mercadopago.token'));
-    
+
         $items = [];
         foreach ($cart as $item) {
             $mpItem = new Item();
@@ -94,9 +100,9 @@ class CheckoutController extends Controller
             $mpItem->unit_price = (float) $item['price'];
             $items[] = $mpItem;
         }
-    
+
         $client = new PreferenceClient();
-    
+
         $preference = $client->create([
             "items" => $items,
             "back_urls" => [
@@ -106,7 +112,7 @@ class CheckoutController extends Controller
             ],
             "auto_return" => "approved",
         ]);
-    
+
         return redirect($preference->init_point);
     }
 }

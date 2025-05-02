@@ -37,4 +37,23 @@
     <div class="text-end fw-bold mt-3">
         Total: ${{ number_format($order->total, 0, ',', '.') }}
     </div>
+
+    <div class="mt-4">
+        <form action="{{ route('admin.orders.updateStatus', $order) }}" method="POST" class="d-flex align-items-center gap-3">
+            @csrf
+            @method('PATCH')
+    
+            <label for="status" class="form-label m-0"><strong>Estado del pedido:</strong></label>
+            <select name="status" id="status" class="form-select w-auto">
+                @foreach (['pendiente', 'pagada', 'enviada', 'cancelada', 'completada'] as $estado)
+                    <option value="{{ $estado }}" @selected($order->status === $estado)>
+                        {{ ucfirst($estado) }}
+                    </option>
+                @endforeach
+            </select>
+    
+            <button class="btn btn-primary">Actualizar</button>
+        </form>
+    </div>
+    
 @endsection
