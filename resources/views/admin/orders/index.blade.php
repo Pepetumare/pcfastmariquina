@@ -12,10 +12,12 @@
                 <th>Correo</th>
                 <th>Comuna</th>
                 <th>Total</th>
+                <th>Estado</th> <!-- Nueva columna -->
                 <th>Fecha</th>
                 <th></th>
             </tr>
         </thead>
+
         <tbody>
             @foreach ($orders as $o)
                 <tr>
@@ -23,6 +25,22 @@
                     <td>{{ $o->customer_name }}</td>
                     <td>{{ $o->customer_email }}</td>
                     <td>{{ $o->commune }}</td>
+                    <td>
+                        @php
+                            $colores = [
+                                'pendiente' => 'secondary',
+                                'pagada' => 'info',
+                                'enviada' => 'primary',
+                                'completada' => 'success',
+                                'cancelada' => 'danger',
+                            ];
+                        @endphp
+
+                        <span class="badge bg-{{ $colores[$o->status] ?? 'dark' }}">
+                            {{ ucfirst($o->status) }}
+                        </span>
+                    </td>
+
                     <td>${{ number_format($o->total, 0, ',', '.') }}</td>
                     <td>{{ $o->created_at->format('d/m/Y H:i') }}</td>
                     <td>

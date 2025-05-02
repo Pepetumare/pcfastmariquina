@@ -11,9 +11,16 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\QuoteRequestController;
 use App\Http\Controllers\MercadoPagoWebhookController;
 use App\Http\Controllers\OrderTrackingController;
+
+// Rutas para clientes autenticados
+Route::middleware(['auth'])->group(function () {
+    Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
+    Route::get('/mis-pedidos', [ClienteController::class, 'pedidos'])->name('cliente.pedidos');
+});
 
 // Panel administrativo (protegido con middleware 'auth' y 'admin')
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -30,6 +37,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/perfil', [ClienteController::class, 'perfil'])->name('cliente.perfil');
+    Route::get('/mis-pedidos', [ClienteController::class, 'pedidos'])->name('cliente.pedidos');
+});
 
 Route::post('/webhooks/mercadopago', [MercadoPagoWebhookController::class, 'handle']);
 

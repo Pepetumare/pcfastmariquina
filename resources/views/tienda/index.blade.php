@@ -1,15 +1,16 @@
+
 @extends('layouts.app')
 @section('title', 'Tienda')
 
 @section('content')
-    <h2 class="text-center mb-4 fw-bold">Catálogo de Productos</h2>
+    <h2 class="text-center fw-bold mb-4 fade-in">🛍️ Catálogo de Productos</h2>
 
     <div class="row">
         <!-- Filtros laterales -->
         <div class="col-md-3 mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Filtros</h5>
+                    <h5 class="card-title">🔎 Filtrar productos</h5>
 
                     <form method="GET" action="{{ route('tienda.index') }}">
                         <div class="mb-3">
@@ -19,22 +20,22 @@
                                 <option>Audio</option>
                                 <option>Accesorios</option>
                                 <option>Componentes</option>
-                                {{-- Opcional: conectar con la tabla de categorías --}}
+                                {{-- Conectar a tabla real de categorías en el futuro --}}
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Precio máximo</label>
-                            <input type="range" class="form-range" name="precio" min="10000" max="200000" step="5000" disabled>
+                            <input type="number" class="form-control" name="precio_max" placeholder="$50.000" disabled>
                         </div>
 
-                        <button class="btn btn-primary w-100" disabled>Aplicar</button>
+                        <button class="btn btn-outline-secondary w-100" disabled>Aplicar filtros</button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Productos reales -->
+        <!-- Productos -->
         <div class="col-md-9">
             @php
                 $productos = \App\Models\Product::paginate(9);
@@ -45,20 +46,31 @@
                     @include('components.producto', [
                         'id' => $producto->id,
                         'nombre' => $producto->name,
-                        'descripcion' => $producto->description ?? 'Descripción no disponible.',
+                        'descripcion' => $producto->description ?? 'Producto sin descripción',
                         'precio' => number_format($producto->price, 0, ',', '.'),
                         'imagen' => $producto->image ?? 'https://via.placeholder.com/400x300?text=Producto'
                     ])
                 @empty
                     <div class="col-12">
-                        <div class="alert alert-info text-center">No hay productos disponibles.</div>
+                        <div class="alert alert-warning text-center">No hay productos disponibles.</div>
                     </div>
                 @endforelse
             </div>
 
-            <div class="mt-4 d-flex justify-content-center">
-                {{ $productos->links('vendor.pagination.bootstrap-5') }}
+            <div class="mt-4">
+                {{ $productos->links() }}
             </div>
         </div>
     </div>
+
+    <style>
+        .fade-in {
+            animation: fadeIn 0.6s ease-out both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 @endsection
