@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Servicios</h5>
                     <p class="card-text">Edita los servicios informáticos ofrecidos.</p>
-                    <a href="#" class="btn btn-outline-success">Ver servicios</a>
+                    <a href="{{ route('admin.services.index') }}" class="btn btn-outline-success">Ver servicios</a>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Cotizaciones</h5>
                     <p class="card-text">Revisa y responde las solicitudes de los clientes.</p>
-                    <a href="#" class="btn btn-outline-warning">Ver cotizaciones</a>
+                    <a href="{{ route('admin.quotes.index') }}" class="btn btn-outline-warning">Ver cotizaciones</a>
                 </div>
             </div>
         </div>

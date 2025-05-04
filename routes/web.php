@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\QuoteController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ClienteController;
@@ -22,6 +23,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mis-pedidos', [ClienteController::class, 'pedidos'])->name('cliente.pedidos');
 });
 
+Route::get('/dashboard', function () {
+    return view('home');
+})->middleware(['auth'])->name('dashboard');
+
 // Panel administrativo (protegido con middleware 'auth' y 'admin')
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
@@ -29,6 +34,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // CRUDs protegidos
     Route::resource('products', ProductController::class);
     Route::resource('services', ServiceController::class);
+    Route::resource('quotes', \App\Http\Controllers\Admin\QuoteController::class)->only(['index', 'show', 'destroy']);
     Route::resource('banners', BannerController::class)->except(['edit', 'show']);
     Route::resource('users', UserController::class)->except(['create', 'store', 'destroy']); // opcional
     Route::resource('categories', CategoryController::class); // opcional si usarás categorías
